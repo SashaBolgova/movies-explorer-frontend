@@ -1,0 +1,20 @@
+.title-page {
+  font-family: "Inter", "Arial", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 27px;
+  letter-spacing: -0.04em;
+  color: #000000;
+  border-bottom: 1px solid #000000;
+  margin: 0;
+  padding-bottom: 23px;
+}
+
+@media screen and (max-width: 320px) {
+  .title-page {
+    font-size: 18px;
+    line-height: 22px;
+    padding-bottom: 28px;
+  }
+}

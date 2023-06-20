@@ -1,0 +1,12 @@
+.saved-movies-gap {
+  height: 140px;
+  margin: 97px 0 0;
+  padding: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .saved-movies-gap {
+    margin: 0;
+    padding: 0;
+  }
+}

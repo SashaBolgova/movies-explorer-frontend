@@ -1,0 +1,21 @@
+.filter-checkbox__on {
+  background-image: url(../../images/tumbler-on.jpg);
+  background-size: 34px 15px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 36px;
+  height: 20px;
+  cursor: pointer;
+  object-fit: cover;
+}
+
+.filter-checkbox__off {
+  background-image: url(../../images/tumbler-off.jpg);
+  background-size: 34px 15px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 36px;
+  height: 20px;
+  cursor: pointer;
+  object-fit: cover;
+}
