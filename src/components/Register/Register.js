@@ -78,6 +78,5 @@ const Register = ({ onRegister }) => {
             </form>
         </div>
     )
-
 }
 export default Register;

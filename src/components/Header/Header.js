@@ -13,7 +13,7 @@ function Header() {
   const currentUser = useContext(CurrentUserContext);
 
   return (
-    <header className={`header ${location.pathname !== "/" ? 'header_loggined' : ''}`}>
+    <header className={`header__logging ${location.pathname !== "/" ? 'header__logging_in' : ''}`}>
       <div className="header__container">
         <div className="header__nav">
           <Logo />

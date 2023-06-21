@@ -1,4 +1,4 @@
-.header {
+.header__logging {
   display: flex;
   position: relative;
   justify-content: center;
@@ -10,7 +10,7 @@
   margin: 0 auto;
 }
 
-.header_loggined {
+.header__logging_in {
   background: #ffffff;
 }
 

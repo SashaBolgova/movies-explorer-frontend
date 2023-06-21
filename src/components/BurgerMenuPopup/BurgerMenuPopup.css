@@ -1,4 +1,4 @@
-.burger-menu-popup {
+.burger-menu-popup__section {
   display: block;
   position: absolute;
   top: 0;
@@ -10,7 +10,7 @@
   z-index: 3;
 }
 
-.burger-menu-popup_opened {
+.burger-menu-popup__section_opened {
   visibility: visible;
   opacity: 1;
   position: fixed;

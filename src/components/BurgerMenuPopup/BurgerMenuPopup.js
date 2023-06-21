@@ -19,7 +19,7 @@ const BurgerMenuPopup = (props) => {
     }, [isOpen, onClose])
 
     return (
-        <section className={`burger-menu-popup ${isOpen ? 'burger-menu-popup_opened' : ''}`}>
+        <section className={`burger-menu-popup__section ${isOpen ? 'burger-menu-popup__section_opened' : ''}`}>
             <div className="burger-menu-popup__container">
                 <button className="burger-menu-popup__close-btn" onClick={onClose}></button>
                 <div className="burger-menu-popup__content">

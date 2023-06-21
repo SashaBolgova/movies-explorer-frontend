@@ -12,8 +12,8 @@ function FilterCheckbox(props) {
     return (
         <div className={
             isFilterCheckboxOn
-                ? "filter-checkbox__on"
-                : "filter-checkbox__off"
+                ? "filter-checkbox__tumbler_on"
+                : "filter-checkbox__tumbler_off"
         } onClick={handleFilterCheckbox}>
         </div>
     );

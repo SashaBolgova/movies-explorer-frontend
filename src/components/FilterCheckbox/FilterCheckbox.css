@@ -1,4 +1,4 @@
-.filter-checkbox__on {
+.filter-checkbox__tumbler_on {
   background-image: url(../../images/tumbler-on.jpg);
   background-size: 34px 15px;
   background-repeat: no-repeat;
@@ -9,7 +9,7 @@
   object-fit: cover;
 }
 
-.filter-checkbox__off {
+.filter-checkbox__tumbler_off {
   background-image: url(../../images/tumbler-off.jpg);
   background-size: 34px 15px;
   background-repeat: no-repeat;
