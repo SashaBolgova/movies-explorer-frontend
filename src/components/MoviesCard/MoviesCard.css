@@ -1,7 +1,7 @@
 .movies-card {
     display: flex;
     flex-direction: column;
-    max-width: 364px;
+    width: 100%;
     margin: 0;
     padding: 0;
     background: #FDFDFD;
@@ -79,9 +79,6 @@
 }
 
 @media screen and (max-width: 768px) {
-    .movies-card {
-        max-width: 339px;
-    }
 
     .movies-card__title {
         margin: 14px 0 15px 14px;
@@ -105,9 +102,6 @@
 }
 
 @media screen and (max-width: 320px) {
-    .movies-card {
-        max-width: 300px;
-    }
 
     .movies-card__like {
         margin: 7px 10px 0 0;

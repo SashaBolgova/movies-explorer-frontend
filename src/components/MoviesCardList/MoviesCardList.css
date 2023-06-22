@@ -1,26 +1,70 @@
 .cards {
   display: grid;
   max-width: 1140px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(364px, 1fr));
   gap: 37px 24px;
   list-style-type: none;
   margin: 0 auto;
   padding: 70px 70px 10px;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1216px) {
   .cards {
-    max-width: 708px;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
+    grid-template-columns: repeat(3, minmax(350px, 1fr));
+    gap: 35px;
     padding: 70px 30px 30px;
   }
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: 1170px) {
   .cards {
-    grid-template-columns: 100%;
+    grid-template-columns: repeat(3, minmax(330px, 1fr));
+    gap: 37px 24px;
+  }
+}
+
+@media screen and (max-width: 1086px) {
+  .cards {
+    max-width: 768px;
+    grid-template-columns: repeat(2, 339px);
+    gap: 30px;
+    padding: 70px 70px 30px;
+  }
+}
+
+@media screen and (max-width: 782px) {
+  .cards {
+    grid-template-columns: repeat(2, 339px);
+    padding: 70px 30px 30px;
+  }
+}
+
+@media screen and (max-width: 740px) {
+  .cards {
+    grid-template-columns: repeat(2, 320px);
+    gap: 20px;
+    padding: 50px 20px 30px;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .cards {
+    grid-template-columns: repeat(2, 300px);
     gap: 14px;
+    padding: 40px 20px 26px;
+  }
+}
+
+@media screen and (max-width: 638px) {
+  .cards {
+    max-width: 400px;
+    grid-template-columns: repeat(1, 339px);
     padding: 40px 10px 26px;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  .cards {
+    grid-template-columns: repeat(1, 300px);
   }
 }
