@@ -1,0 +1,51 @@
+.header__logging {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  background: #f3c1f8;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  min-height: 74px;
+  margin: 0 auto;
+}
+
+.header__logging_in {
+  background: #ffffff;
+}
+
+.header__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 38px;
+  margin: 0;
+  padding: 18px 14px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 18px 70px;
+}
+
+.header__nav {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.header__menu {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media screen and (max-width: 768px) {
+  .header__container {
+    padding: 18px 30px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .header__container {
+    padding: 18px 14px;
+  }
+}

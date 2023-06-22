@@ -1,0 +1,46 @@
+.account {
+  margin: 0;
+}
+
+.account__link {
+  text-decoration: none;
+}
+
+.account__button {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  background-color: transparent;
+  border: 2px solid;
+  border-color: rgb(67%, 67%, 67%, 0.2);
+  border-radius: 50px;
+}
+
+.account__button:hover {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.account__title {
+  font-family: "Inter", "Arial", sans-serif;
+  text-decoration: none;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  color: #000000;
+  margin: 8px 12px 8px 7px;
+}
+
+.account__icon {
+  margin-left: 12px;
+  padding: 0;
+  width: 12px;
+  height: 14px;
+}
+
+@media screen and (max-width: 768px) {
+  .account {
+    display: none;
+  }
+}
