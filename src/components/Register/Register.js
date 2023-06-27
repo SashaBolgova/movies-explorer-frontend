@@ -1,38 +1,28 @@
-import { useState } from 'react';
+import React, { useCallback } from "react";
 import { Link } from 'react-router-dom';
 import './Register.css'
 import Logo from "../Logo/Logo";
 import SubmitForm from "../SubmitForm/SubmitForm";
+import { useFormWithValidation } from "../validation/validation";
 
-const Register = ({ onRegister }) => {
-    const [formValue, setFormValue] = useState({
-        name: '',
-        email: '',
-        password: ''
-    })
+const Register = (props) => {
+    const { onSubmit } = props;
+    const { values, handleChange, isValid } = useFormWithValidation();
 
-    const handleChange = (e) => {
-        const { name, email, value } = e.target;
-
-        setFormValue({
-            ...formValue,
-            [name]: value,
-            [email]: value,
-        });
-    }
-    const handleSubmit = (e) => {
+    const handleSubmit = useCallback((e) => {
         e.preventDefault();
 
-        const { name, email, password } = formValue;
-        if (onRegister && email && password && name) {
-            onRegister(name, email, password);
-        }
-    }
+        onSubmit({
+            name: values.name,
+            email: values.email,
+            password: values.password
+        });
+    }, [values, onSubmit])
     return (
         <div className='registration'>
             <Logo />
             <h1 className='registration__header'>Добро пожаловать!</h1>
-            <form className='registration__form' onSubmit={handleSubmit}>
+            <form className='registration__form' onSubmit={handleSubmit} isValid={isValid}>
                 <fieldset className='registration__info'>
                     <legend className='registration__legend'>Имя</legend>
                     <input
@@ -41,7 +31,7 @@ const Register = ({ onRegister }) => {
                         type="text"
                         name="name"
                         required
-                        value={formValue.name}
+                        value={values.name}
                         onChange={handleChange}
                         minLength="2"
                         maxLength="40"
@@ -54,7 +44,7 @@ const Register = ({ onRegister }) => {
                         name='email'
                         type="email"
                         required
-                        value={formValue.email}
+                        value={values.email}
                         onChange={handleChange}
                         errorText="Что-то пошло не так..."
                     />
@@ -65,12 +55,12 @@ const Register = ({ onRegister }) => {
                         name='password'
                         type="password"
                         required
-                        value={formValue.password}
+                        value={values.password}
                         onChange={handleChange}
                         errorText="Что-то пошло не так..."
                     />
                 </fieldset>
-                <SubmitForm buttonText="Зарегистрироваться">
+                <SubmitForm buttonText="Зарегистрироваться" isValid={!isValid}>
                     <p className='submit__text'>Уже зарегистрированы?
                         <Link to='/signin' className='submit__span'> Войти</Link>
                     </p>

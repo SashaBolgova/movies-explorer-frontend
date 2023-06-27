@@ -1,32 +1,22 @@
-import { useState } from 'react';
+import React, { useCallback } from "react";
 import { Link } from 'react-router-dom';
 import './Login.css'
 import Logo from "../Logo/Logo";
 import SubmitForm from "../SubmitForm/SubmitForm";
+import { useFormWithValidation } from "../validation/validation";
 
-const Login = ({ onLogin }) => {
-  const [inputs, setInput] = useState({
-    email: '',
-    password: '',
-  });
+const Login = (props) => {
+  const { onSubmit } = props;
+  const { values, handleChange, isValid } = useFormWithValidation();
 
-  const handleChange = (e) => {
-    const { email, password, value } = e.target;
-    setInput((prev) => ({
-      ...prev,
-      [email]: value,
-      [password]: value,
-    }));
-  }
-
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
-    const { email, password } = inputs
 
-    if (onLogin && email && password) {
-      onLogin(email, password)
-    }
-  }
+    onSubmit({
+      email: values.email,
+      password: values.password
+    });
+  }, [values, onSubmit])
 
   return (
     <div className='login'>
@@ -41,7 +31,7 @@ const Login = ({ onLogin }) => {
             name='email'
             type="email"
             required
-            value={inputs.email}
+            value={values.email}
             onChange={handleChange}
           />
           <legend className='login__legend'>Пароль</legend>
@@ -51,11 +41,11 @@ const Login = ({ onLogin }) => {
             name='password'
             type="password"
             required
-            value={inputs.password}
+            value={values.password}
             onChange={handleChange}
           />
         </fieldset>
-        <SubmitForm buttonText="Войти">
+        <SubmitForm buttonText="Войти" isValid={!isValid}>
           <p className='submit__text'>Ещё не зарегистрированы?
             <Link to='/signup' className='submit__span'> Регистрация</Link>
           </p>

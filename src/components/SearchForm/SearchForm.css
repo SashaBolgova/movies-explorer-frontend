@@ -63,6 +63,20 @@
   margin-left: 14px;
 }
 
+.search__error-text {
+  font-family: "Inter", "Arial", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #ff4062;
+  display: block;
+  opacity: 1;
+  min-height: 12px;
+  margin-bottom: 22px;
+  margin-left: 20px;
+}
+
 @media screen and (max-width: 768px) {
   .search {
     padding: 80px 30px 61px;
