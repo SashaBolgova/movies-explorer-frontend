@@ -15,79 +15,54 @@ import { mainApi } from "../../utils/MainApi";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
   const [currentUser, setCurrentUser] = useState({ data: {} });
-  const [requestStatus, setRequestStatus] = useState(false);
+  const [isAppInit, setIsAppInit] = useState(false);
 
   const navigate = useNavigate();
 
   //управление формой регистрации
-  const handleSignUp = (data) => {
-    auth
-      .signUp(data)
-      .then((res) => {
-        if (res) {
-          setRequestStatus(true);
-        }
-      })
-      .then(() => handleSignIn(data))
-      .then((data) => {
-        auth.signIn(data.email, data.password);
-      })
-      .catch((err) => {
-        console.log(err);
-        setRequestStatus(false);
-      });
-  };
-
-  function handleLogin() {
-    setIsLoggedIn(true);
+  const handleSignUp = async ({ name, email, password }) => {
+    try {
+      await auth.signUp({ name, email, password });
+      const { token } = await auth.signIn({ email, password });
+      localStorage.setItem('jwt', token);
+      setIsLoggedIn(true);
+      navigate("/movies");
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   //управление формой авторизации
-  const handleSignIn = (data) => {
-    auth
-      .signIn(data.email, data.password)
-      .then((res) => {
-        localStorage.setItem('jwt', res.token);
-      })
-      .then(() => {
-        handleLogin();
-      })
-      .then(() => navigate('/movies'))
-      .then(() => {
-        auth.getUserData().then((data) => {
-          setCurrentUser(data);
-        });
-      })
-      .catch((err) => {
-        setRequestStatus(false);
-        console.log(err);
-      })
-  };
+  const handleSignIn = async ({ email, password }) => {
+    try {
+      const { token } = await auth.signIn({ email, password });
+      localStorage.setItem('jwt', token);
+      setIsLoggedIn(true);
+      navigate("/movies");
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   //проверка токена
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
-    if (token) {
-      auth
-        .getAuthentication(token)
-        .then((res) => {
-          if (res) {
-            handleLogin();
-            setIsChecking(false);
-          }
+    const jwt = localStorage.getItem('jwt');
+
+    if (jwt) {
+      auth.getAuthentication(jwt)
+        .then((user) => {
+          setCurrentUser(user)
+          setIsLoggedIn(true);
         })
-        .then(() => {
-          mainApi.getUserInfo().then((data) => {
-            setCurrentUser(data);
-          });
+        .catch((err) => console.log(err))
+        .finally(() => {
+          setIsAppInit(true)
         })
-        .catch((err) => console.log(err));
     } else {
-      setIsChecking(false);
+      setIsAppInit(true)
     }
-  }, [isLoggedIn, navigate]);
+  }, [])
 
   //выход пользователя со страницы
   const handleSignOut = () => {
@@ -101,6 +76,16 @@ function App() {
     setIsLoggedIn(false);
     navigate('/');
   }
+  
+   //получение информации о пользователе с сервера
+   const getCurrentUserInfo = async () => {
+    try {
+      const currentUserInfo = await mainApi.getUserInfo();
+      setCurrentUser(currentUserInfo);
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   //редактирование информации о пользователе
   const handleUpdateUserData = async ({ name, email }) => {
@@ -111,6 +96,15 @@ function App() {
       console.log(err)
     }
   }
+  useEffect(() => {
+    if (isLoggedIn) {
+      getCurrentUserInfo();
+    }
+  }, [isLoggedIn])
+
+  if (!isAppInit) {
+    return null
+  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -120,19 +114,19 @@ function App() {
             <Route path="/" element={<Main />} />
             <Route path="/movies" element={
               <ProtectedRoute isLoggedIn={isLoggedIn}
-              isChecking={isChecking}>
+              >
                 <Movies />
               </ProtectedRoute>
             } />
             <Route path="/saved-movies" element={
               <ProtectedRoute isLoggedIn={isLoggedIn}
-              isChecking={isChecking}>
+              >
                 <SavedMovies />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={
               <ProtectedRoute isLoggedIn={isLoggedIn}
-              isChecking={isChecking}>
+              >
                 <Profile onSignOut={handleSignOut} onUpdateUserData={handleUpdateUserData} />
               </ProtectedRoute>
             } />
@@ -141,7 +135,7 @@ function App() {
               :
               <Register
                 onSubmit={handleSignUp}
-                isRequestStatus={requestStatus}
+               
               />}
             />
             <Route path="/signin" element={isLoggedIn

@@ -1,6 +1,6 @@
 class Auth {
   constructor({ baseURL }) {
-    this.url = baseURL;
+    this._url = baseURL;
   }
 
 _checkAnswer = (res) => {
@@ -11,7 +11,8 @@ _checkAnswer = (res) => {
 }
 
 signUp(data) {
-  return fetch(`${this.url}/signup`, {
+  return fetch(`${this._url}/signup`, {
+    credentials: 'include',
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -29,7 +30,8 @@ signUp(data) {
 }
 
 signIn(data) {
-  return fetch(`${this.url}/signin`, {
+  return fetch(`${this._url}/signin`, {
+    credentials: 'include',
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -51,7 +53,8 @@ signIn(data) {
 }
 
 getAuthentication(token) {
-  return fetch(`${this.url}/users/me`, {
+  return fetch(`${this._url}/users/me`, {
+    credentials: 'include',
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
