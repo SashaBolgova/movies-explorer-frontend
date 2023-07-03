@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import './Register.css'
 import Logo from "../Logo/Logo";
 import SubmitForm from "../SubmitForm/SubmitForm";
 import { useFormWithValidation } from "../validation/validation";
 
 const Register = (props) => {
-    const { onSubmit } = props;
+    const { onSubmit, isRequestStatus, loggedIn } = props;
     const { values, handleChange, isValid } = useFormWithValidation();
 
     const handleSubmit = useCallback((e) => {
@@ -18,6 +18,11 @@ const Register = (props) => {
             password: values.password
         });
     }, [values, onSubmit])
+
+    if (loggedIn || isRequestStatus) {
+        return <Redirect to='/movies' />;
+      }
+
     return (
         <div className='registration'>
             <Logo />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useHistory, } from 'react-router-dom';
 import Main from '../Main/Main';
 import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
@@ -9,61 +9,85 @@ import Register from '../Register/Register';
 import PageNotFound from '../PageNotFound/PageNotFound';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import { checkAuth, signIn, signUp } from "../../utils/auth";
+import auth from "../../utils/auth";
 import { mainApi } from "../../utils/MainApi";
 
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAppInit, setIsAppInit] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
+  const [currentUser, setCurrentUser] = useState({ data: {} });
+  const [requestStatus, setRequestStatus] = useState(false);
 
-  const navigate = useNavigate();
+  const history = useHistory();
 
   //управление формой регистрации
-  const handleSignUp = async ({ name, email, password }) => {
-    try {
-      await signUp({ name, email, password });
-      const { token } = await signIn({ email, password });
-      localStorage.setItem('jwt', token);
-      setIsLoggedIn(true);
-      navigate("/movies");
+  const handleSignUp = (data) => {
+    auth
+      .signUp(data)
+      .then((res) => {
+        if (res) {
+          setRequestStatus(true);
+        }
+      })
+      .then(() => handleSignIn(data))
+      .then((data) => {
+        auth.signIn(data.email, data.password);
+      })
+      .catch((err) => {
+        console.log(err);
+        setRequestStatus(false);
+      });
+  };
 
-    } catch (err) {
-      console.log(err);
-    }
+  function handleLogin() {
+    setIsLoggedIn(true);
   }
 
   //управление формой авторизации
-  const handleSignIn = async ({ email, password }) => {
-    try {
-      const { token } = await signIn({ email, password });
-      localStorage.setItem('jwt', token);
-      setIsLoggedIn(true);
-      navigate("/movies");
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  const handleSignIn = (data) => {
+    auth
+      .signIn(data.email, data.password)
+      .then((res) => {
+        localStorage.setItem('jwt', res.token);
+      })
+      .then(() => {
+        handleLogin();
+      })
+      .then(() => history.push('/movies'))
+      .then(() => {
+        auth.getUserData().then((data) => {
+          setCurrentUser(data);
+        });
+      })
+      .catch((err) => {
+        setRequestStatus(false);
+        console.log(err);
+      })
+  };
 
   //проверка токена
   useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
-
-    if (jwt) {
-      checkAuth(jwt)
-        .then((user) => {
-          setCurrentUser(user)
-          setIsLoggedIn(true);
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      auth
+        .getAuthentication(token)
+        .then((res) => {
+          if (res) {
+            handleLogin();
+            setIsChecking(false);
+          }
         })
-        .catch((err) => console.log(err))
-        .finally(() => {
-          setIsAppInit(true)
+        .then(() => {
+          mainApi.getUserInfo().then((data) => {
+            setCurrentUser(data);
+          });
         })
+        .catch((err) => console.log(err));
     } else {
-      setIsAppInit(true)
+      setIsChecking(false);
     }
-  }, [])
+  }, [isLoggedIn, history]);
 
   //выход пользователя со страницы
   const handleSignOut = () => {
@@ -75,17 +99,7 @@ function App() {
     localStorage.removeItem('allSavedMovies');
     setCurrentUser(null)
     setIsLoggedIn(false);
-    navigate("/");
-  }
-
-  //получение информации о пользователе с сервера
-  const getCurrentUserInfo = async () => {
-    try {
-      const currentUserInfo = await mainApi.getUserInfo();
-      setCurrentUser(currentUserInfo);
-    } catch (err) {
-      console.log(err)
-    }
+    history.push('/');
   }
 
   //редактирование информации о пользователе
@@ -93,21 +107,9 @@ function App() {
     try {
       const updatedUserData = await mainApi.setUserInfo({ name, email });
       setCurrentUser(updatedUserData);
-
     } catch (err) {
       console.log(err)
     }
-  }
-
-  //хук получения данных пользователя при входе
-  useEffect(() => {
-    if (isLoggedIn) {
-      getCurrentUserInfo();
-    }
-  }, [isLoggedIn])
-
-  if (!isAppInit) {
-    return null
   }
 
   return (
@@ -117,17 +119,20 @@ function App() {
           <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/movies" element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <ProtectedRoute isLoggedIn={isLoggedIn}
+              isChecking={isChecking}>
                 <Movies />
               </ProtectedRoute>
             } />
             <Route path="/saved-movies" element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <ProtectedRoute isLoggedIn={isLoggedIn}
+              isChecking={isChecking}>
                 <SavedMovies />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <ProtectedRoute isLoggedIn={isLoggedIn}
+              isChecking={isChecking}>
                 <Profile onSignOut={handleSignOut} onUpdateUserData={handleUpdateUserData} />
               </ProtectedRoute>
             } />
@@ -136,6 +141,7 @@ function App() {
               :
               <Register
                 onSubmit={handleSignUp}
+                isRequestStatus={requestStatus}
               />}
             />
             <Route path="/signin" element={isLoggedIn

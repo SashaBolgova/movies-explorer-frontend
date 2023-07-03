@@ -1,14 +1,35 @@
-export const BASE_URL = 'https://api.sashadiploma.nomoredomains.rocks';
+class Auth {
+  constructor({ baseURL }) {
+    this.url = baseURL;
+  }
 
-const checkAnswer = (res) => {
+_checkAnswer = (res) => {
   if (res.ok) {
     return res.json();
   }
   return Promise.reject(`Ошибка: ${res.status}`);
 }
 
-export const signUp = async (data) => {
-  return fetch(`${BASE_URL}/signup`, {
+signUp(data) {
+  return fetch(`${this.url}/signup`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data),
+  })
+  .then((res) => {
+    return this._checkAnswer(res);
+  })
+  .then((data) => {
+    localStorage.setItem('jwt', data.token);
+    return data;
+  });
+}
+
+signIn(data) {
+  return fetch(`${this.url}/signin`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -16,28 +37,35 @@ export const signUp = async (data) => {
     },
     body: JSON.stringify(data)
   })
-    .then(checkAnswer)
-}
-
-export const signIn = async (data) => {
-  return fetch(`${BASE_URL}/signin`, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
+  .then((res) => {
+    return this._checkAnswer(res);
   })
-  .then(checkAnswer)
+  .then((data) => {
+    if (data.token) {
+      localStorage.setItem('jwt', data.token);
+      return data;
+    } else {
+      return;
+    }
+  });
 }
 
-export const checkAuth = async (token) => {
-  return fetch(`${BASE_URL}/users/me`, {
+getAuthentication(token) {
+  return fetch(`${this.url}/users/me`, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
           "Authorization": `Bearer ${token}`
       },
   })
-  .then(checkAnswer)
+  .then((res) => {
+    return this._checkAnswer(res);
+  });
 }
+}
+
+const auth = new Auth({
+  baseURL: 'https://api.sashadiploma.nomoredomains.rocks'
+});
+
+export default auth;

@@ -12,7 +12,6 @@ export class MainApi {
 
     async getUserInfo() {
         const res = await fetch(`${this._baseUrl}/users/me`, {
-            method: 'GET',
             headers: {
                 authorization: `Bearer ${localStorage.getItem('jwt')}`,
                 'Content-Type': 'application/json'

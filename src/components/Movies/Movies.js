@@ -87,7 +87,6 @@ function Movies(props) {
     useEffect(() => {
         getMovies();
         getSavedMovies();
-
         localStorage.getItem("allMovies", movies);
 
     }, [])
@@ -95,7 +94,6 @@ function Movies(props) {
     // изменение ширины экрана
     useEffect(() => {
         window.addEventListener('resize', handleResize);
-
         return () => {
             window.removeEventListener('resize', handleResize);
         }
