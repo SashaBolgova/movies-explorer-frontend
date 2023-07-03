@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate, useHistory, } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Main from '../Main/Main';
 import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
@@ -19,7 +19,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({ data: {} });
   const [requestStatus, setRequestStatus] = useState(false);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   //управление формой регистрации
   const handleSignUp = (data) => {
@@ -54,7 +54,7 @@ function App() {
       .then(() => {
         handleLogin();
       })
-      .then(() => history.push('/movies'))
+      .then(() => navigate('/movies'))
       .then(() => {
         auth.getUserData().then((data) => {
           setCurrentUser(data);
@@ -87,7 +87,7 @@ function App() {
     } else {
       setIsChecking(false);
     }
-  }, [isLoggedIn, history]);
+  }, [isLoggedIn, navigate]);
 
   //выход пользователя со страницы
   const handleSignOut = () => {
@@ -99,7 +99,7 @@ function App() {
     localStorage.removeItem('allSavedMovies');
     setCurrentUser(null)
     setIsLoggedIn(false);
-    history.push('/');
+    navigate('/');
   }
 
   //редактирование информации о пользователе
