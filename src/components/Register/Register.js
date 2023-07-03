@@ -6,7 +6,7 @@ import SubmitForm from "../SubmitForm/SubmitForm";
 import { useFormWithValidation } from "../validation/validation";
 
 const Register = (props) => {
-    const { onSubmit, isRequestStatus, loggedIn } = props;
+    const { onSubmit } = props;
     const { values, handleChange, isValid } = useFormWithValidation();
 
     const handleSubmit = useCallback((e) => {
@@ -19,9 +19,6 @@ const Register = (props) => {
         });
     }, [values, onSubmit])
 
-    if (loggedIn || isRequestStatus) {
-        return <Link to='/movies' />;
-      }
 
     return (
         <div className='registration'>
