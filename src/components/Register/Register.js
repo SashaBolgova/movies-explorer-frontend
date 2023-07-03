@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Register.css'
 import Logo from "../Logo/Logo";
 import SubmitForm from "../SubmitForm/SubmitForm";
@@ -20,7 +20,7 @@ const Register = (props) => {
     }, [values, onSubmit])
 
     if (loggedIn || isRequestStatus) {
-        return <Redirect to='/movies' />;
+        return <Link to='/movies' />;
       }
 
     return (
