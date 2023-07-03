@@ -23,10 +23,6 @@ signUp(data) {
   .then((res) => {
     return this._checkAnswer(res);
   })
-  .then((data) => {
-    localStorage.setItem('jwt', data.token);
-    return data;
-  });
 }
 
 signIn(data) {
@@ -42,14 +38,6 @@ signIn(data) {
   .then((res) => {
     return this._checkAnswer(res);
   })
-  .then((data) => {
-    if (data.token) {
-      localStorage.setItem('jwt', data.token);
-      return data;
-    } else {
-      return;
-    }
-  });
 }
 
 getAuthentication(token) {
