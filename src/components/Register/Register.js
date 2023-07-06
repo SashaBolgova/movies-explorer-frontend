@@ -7,7 +7,7 @@ import { useFormWithValidation } from "../validation/validation";
 
 const Register = (props) => {
     const { onSubmit } = props;
-    const { values, handleChange, isValid, errors } = useFormWithValidation();
+    const { values, handleChange, isValid } = useFormWithValidation();
 
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
@@ -38,7 +38,6 @@ const Register = (props) => {
                         autoComplete="off"
                         minLength="2"
                         maxLength="40"
-                        error={errors.name}
                     />
                     <legend className='registration__legend'>E-mail</legend>
                     <input
@@ -50,7 +49,6 @@ const Register = (props) => {
                         value={values.email || ''}
                         onChange={handleChange}
                         autoComplete="off"
-                        error={errors.email}
                     />
                     <legend className='registration__legend'>Пароль</legend>
                     <input
@@ -62,7 +60,6 @@ const Register = (props) => {
                         value={values.password || ''}
                         onChange={handleChange}
                         autoComplete="off"
-                        error={errors.password}
                     />
                 </fieldset>
                 <SubmitForm buttonText="Зарегистрироваться" isValid={!isValid}>
