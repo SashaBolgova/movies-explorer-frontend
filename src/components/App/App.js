@@ -36,15 +36,14 @@ function App() {
   //управление формой авторизации
   const handleSignIn = async ({ email, password }) => {
     auth.signIn({ email, password })
-      .then((res) => {
-        localStorage.setItem('jwt', res.token);
+      .then((user) => {
+        localStorage.setItem('jwt', 'true');
+        setCurrentUser(user);
+        navigate("/movies")
       })
       .then(() =>
         setIsLoggedIn(true)
       )
-      .then(() =>
-        navigate("/movies"))
-
       .catch((err) => {
         console.log(err);
       });
