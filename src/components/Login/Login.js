@@ -7,7 +7,7 @@ import { useFormWithValidation } from "../validation/validation";
 
 const Login = (props) => {
   const { onSubmit } = props;
-  const { values, handleChange, isValid, errors } = useFormWithValidation();
+  const { values, handleChange, isValid } = useFormWithValidation();
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
@@ -33,7 +33,6 @@ const Login = (props) => {
             required
             value={values.email || ''}
             onChange={handleChange}
-            error={errors.email}
           />
           <legend className='login__legend'>Пароль</legend>
           <input
@@ -44,7 +43,6 @@ const Login = (props) => {
             required
             value={values.password || ''}
             onChange={handleChange}
-            error={errors.password}
           />
         </fieldset>
         <SubmitForm buttonText="Войти" isValid={!isValid}>
