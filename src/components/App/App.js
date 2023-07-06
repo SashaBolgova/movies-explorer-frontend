@@ -39,7 +39,7 @@ function App() {
       .then((user) => {
         localStorage.setItem('jwt', 'true');
         setCurrentUser(user);
-        navigate("/movies")
+        navigate("/movies");
       })
       .then(() =>
         setIsLoggedIn(true)
