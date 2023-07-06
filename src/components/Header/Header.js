@@ -16,10 +16,10 @@ function Header() {
       <div className="header__container">
         <div className="header__nav">
           <Logo />
-          <div className="header__links">{currentUser ? <Navigation /> : null}</div>
+          <div className="header__links">{currentUser.name ? <Navigation /> : null}</div>
         </div>
         <div className="header__menu">
-          {currentUser ? (
+          {currentUser.name ? (
             <>
               <AccountIcon />
               <BurgerMenu />
