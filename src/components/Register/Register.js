@@ -7,7 +7,7 @@ import { useFormWithValidation } from "../validation/validation";
 
 const Register = (props) => {
     const { onSubmit } = props;
-    const { values, handleChange, isValid } = useFormWithValidation();
+    const { values, handleChange, isValid, errors } = useFormWithValidation();
 
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
@@ -33,11 +33,12 @@ const Register = (props) => {
                         type="text"
                         name="name"
                         required
-                        value={values.name}
+                        value={values.name || ''}
                         onChange={handleChange}
+                        autoComplete="off"
                         minLength="2"
                         maxLength="40"
-                        errorText="Что-то пошло не так..."
+                        error={errors.name}
                     />
                     <legend className='registration__legend'>E-mail</legend>
                     <input
@@ -46,9 +47,10 @@ const Register = (props) => {
                         name='email'
                         type="email"
                         required
-                        value={values.email}
+                        value={values.email || ''}
                         onChange={handleChange}
-                        errorText="Что-то пошло не так..."
+                        autoComplete="off"
+                        error={errors.email}
                     />
                     <legend className='registration__legend'>Пароль</legend>
                     <input
@@ -57,9 +59,10 @@ const Register = (props) => {
                         name='password'
                         type="password"
                         required
-                        value={values.password}
+                        value={values.password || ''}
                         onChange={handleChange}
-                        errorText="Что-то пошло не так..."
+                        autoComplete="off"
+                        error={errors.password}
                     />
                 </fieldset>
                 <SubmitForm buttonText="Зарегистрироваться" isValid={!isValid}>

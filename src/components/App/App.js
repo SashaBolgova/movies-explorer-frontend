@@ -96,6 +96,7 @@ function App() {
       console.log(err)
     }
   }
+  
   useEffect(() => {
     if (isLoggedIn) {
       getCurrentUserInfo();

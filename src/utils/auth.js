@@ -10,8 +10,8 @@ _checkAnswer = (res) => {
   return Promise.reject(`Ошибка: ${res.status}`);
 }
 
-signUp(data) {
-  return fetch(`${this._url}/signup`, {
+signUp = async (data) => {
+  const res = await fetch(`${this._url}/signup`, {
     credentials: 'include',
     method: 'POST',
     headers: {
@@ -20,13 +20,13 @@ signUp(data) {
     },
     body: JSON.stringify(data),
   })
-  .then((res) => {
+ 
     return this._checkAnswer(res);
-  })
+ 
 }
 
-signIn(data) {
-  return fetch(`${this._url}/signin`, {
+signIn = async (data) => {
+  const res = await fetch(`${this._url}/signin`, {
     credentials: 'include',
     method: 'POST',
     headers: {
@@ -35,13 +35,12 @@ signIn(data) {
     },
     body: JSON.stringify(data)
   })
-  .then((res) => {
     return this._checkAnswer(res);
-  })
+  
 }
 
-getAuthentication(token) {
-  return fetch(`${this._url}/users/me`, {
+getAuthentication = async (token) => {
+  const res = await fetch(`${this._url}/users/me`, {
     credentials: 'include',
       method: 'GET',
       headers: {
@@ -49,9 +48,7 @@ getAuthentication(token) {
           "Authorization": `Bearer ${token}`
       },
   })
-  .then((res) => {
     return this._checkAnswer(res);
-  });
 }
 }
 
