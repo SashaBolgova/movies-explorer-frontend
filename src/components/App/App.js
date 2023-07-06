@@ -35,14 +35,19 @@ function App() {
 
   //управление формой авторизации
   const handleSignIn = async ({ email, password }) => {
-    try {
-      const { token } = await auth.signIn({ email, password });
-      localStorage.setItem('jwt', token);
-      setIsLoggedIn(true);
-      navigate("/movies");
-    } catch (err) {
-      console.log(err);
-    }
+    auth.signIn({ email, password })
+      .then((res) => {
+        localStorage.setItem('jwt', res.token);
+      })
+      .then(() =>
+        setIsLoggedIn(true)
+      )
+      .then(() =>
+        navigate("/movies"))
+
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   //проверка токена
@@ -76,9 +81,9 @@ function App() {
     setIsLoggedIn(false);
     navigate('/');
   }
-  
-   //получение информации о пользователе с сервера
-   const getCurrentUserInfo = async () => {
+
+  //получение информации о пользователе с сервера
+  const getCurrentUserInfo = async () => {
     try {
       const currentUserInfo = await mainApi.getUserInfo();
       setCurrentUser(currentUserInfo);
@@ -96,7 +101,7 @@ function App() {
       console.log(err)
     }
   }
-  
+
   useEffect(() => {
     if (isLoggedIn) {
       getCurrentUserInfo();
@@ -136,7 +141,7 @@ function App() {
               :
               <Register
                 onSubmit={handleSignUp}
-               
+
               />}
             />
             <Route path="/signin" element={isLoggedIn

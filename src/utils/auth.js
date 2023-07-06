@@ -45,7 +45,6 @@ getAuthentication = async (token) => {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
-          "Authorization": `Bearer ${token}`
       },
   })
     return this._checkAnswer(res);

@@ -12,8 +12,8 @@ export class MainApi {
 
     async getUserInfo() {
         const res = await fetch(`${this._baseUrl}/users/me`, {
+            credentials: 'include',
             headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
                 'Content-Type': 'application/json'
             }
         })
@@ -23,8 +23,8 @@ export class MainApi {
     async setUserInfo(data) {
         const res = await fetch(`${this._baseUrl}/users/me`, {
             method: 'PATCH',
+            credentials: 'include',
             headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -38,8 +38,8 @@ export class MainApi {
     async getSavedMovies() {
         const res = await fetch(`${this._baseUrl}/movies`, {
             method: 'GET',
+            credentials: 'include',
             headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
                 'Content-Type': 'application/json'
             }
         })
@@ -49,8 +49,8 @@ export class MainApi {
     async saveMovie(data) {
         const res = await fetch(`${this._baseUrl}/movies`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -73,8 +73,8 @@ export class MainApi {
     async deleteMovie(id) {
         const res = await fetch(`${this._baseUrl}/movies/${id}`, {
             method: 'DELETE',
+            credentials: 'include',
             headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`,
                 'Content-Type': 'application/json'
             }
         })
