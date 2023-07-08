@@ -39,7 +39,7 @@ signIn = async (data) => {
   
 }
 
-getAuthentication = async (token) => {
+getAuthentication = async () => {
   const res = await fetch(`${this._url}/users/me`, {
     credentials: 'include',
       method: 'GET',
