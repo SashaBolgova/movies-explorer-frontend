@@ -51,8 +51,10 @@ function App() {
 
   //проверка 
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
-    auth.getAuthentication(token)
+    const jwt = localStorage.getItem('jwt');
+
+    if (jwt) {
+    auth.getAuthentication(jwt)
       .then((user) => {
         setCurrentUser(user)
         setIsLoggedIn(true);
@@ -61,6 +63,9 @@ function App() {
       .finally(() => {
         setIsAppInit(true)
       })
+    } else {
+      setIsAppInit(true)
+    }
   }, [])
 
   //выход пользователя со страницы
