@@ -44,7 +44,8 @@ getAuthentication = async () => {
     credentials: 'include',
       method: 'GET',
       headers: {
-          'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
   })
     return this._checkAnswer(res);

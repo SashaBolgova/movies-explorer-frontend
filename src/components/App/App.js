@@ -51,7 +51,8 @@ function App() {
 
   //проверка 
   useEffect(() => {
-    auth.getAuthentication()
+    const token = localStorage.getItem('jwt');
+    auth.getAuthentication(token)
       .then((user) => {
         setCurrentUser(user)
         setIsLoggedIn(true);
