@@ -10,26 +10,26 @@ _checkAnswer = (res) => {
   return Promise.reject(`Ошибка: ${res.status}`);
 }
 
-signUp = async (data) => {
+signUp = async ({ name, email, password }) => {
   const res = await fetch(`${this._url}/signup`, {
     credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ name, email, password }),
   })
     return this._checkAnswer(res);
 }
 
-signIn = async (data) => {
+signIn = async ({ email, password }) => {
   const res = await fetch(`${this._url}/signin`, {
     credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify({ email, password })
   })
     return this._checkAnswer(res);
   
