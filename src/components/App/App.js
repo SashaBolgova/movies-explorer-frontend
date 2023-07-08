@@ -51,21 +51,15 @@ function App() {
 
   //проверка 
   useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
-
-    if (jwt) {
-      auth.getAuthentication(jwt)
-        .then((user) => {
-          setCurrentUser(user)
-          setIsLoggedIn(true);
-        })
-        .catch((err) => console.log(err))
-        .finally(() => {
-          setIsAppInit(true)
-        })
-    } else {
-      setIsAppInit(true)
-    }
+    auth.getAuthentication()
+      .then((user) => {
+        setCurrentUser(user)
+        setIsLoggedIn(true);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setIsAppInit(true)
+      })
   }, [])
 
   //выход пользователя со страницы
