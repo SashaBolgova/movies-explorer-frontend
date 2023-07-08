@@ -24,8 +24,8 @@ function App() {
   const handleSignUp = async ({ name, email, password }) => {
     auth
       .signUp({ name, email, password })
-      .then(() => {
-        handleSignIn({ email, password });
+      .then((user) => {
+        handleSignIn(user);
         navigate("/movies");
       })
       .catch((err) => {
@@ -49,7 +49,7 @@ function App() {
       });
   }
 
-  //проверка токена
+  //проверка 
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
 
