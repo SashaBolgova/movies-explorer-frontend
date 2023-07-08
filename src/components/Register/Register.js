@@ -38,7 +38,7 @@ const Register = (props) => {
                         autoComplete="off"
                         minLength="2"
                         maxLength="40"
-                        error={errors?.name || ''}
+                        error={errors?.name || 'Ошибка'}
                     />
                     <legend className='registration__legend'>E-mail</legend>
                     <input

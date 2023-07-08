@@ -22,15 +22,15 @@ function App() {
 
   //управление формой регистрации
   const handleSignUp = async ({ name, email, password }) => {
-    try {
-      await auth.signUp({ name, email, password });
-      const { token } = await auth.signIn({ email, password });
-      localStorage.setItem('jwt', token);
-      setIsLoggedIn(true);
-      navigate("/movies");
-    } catch (err) {
-      console.log(err);
-    }
+    auth
+      .signUp({ name, email, password })
+      .then(() => {
+        handleSignIn({ email, password });
+        navigate("/movies");
+      })
+      .catch((err) => {
+        console.log(err);
+      })
   }
 
   //управление формой авторизации
