@@ -22,51 +22,47 @@ function App() {
 
   //управление формой регистрации
   const handleSignUp = async ({ name, email, password }) => {
-    auth
-      .signUp({ name, email, password })
-      .then((user) => {
-        handleSignIn(user);
+    try {
+      const data = await auth.signUp({ name, email, password });
+      if (data) {
+        handleSignIn(data);
         navigate("/movies");
-      })
-      .catch((err) => {
+      }
+      } catch (err) {
         console.log(err);
-      })
+      }
   }
 
   //управление формой авторизации
   const handleSignIn = async ({ email, password }) => {
-    auth.signIn({ email, password })
-      .then((user) => {
-        localStorage.setItem('jwt', 'true');
-        setCurrentUser(user);
+    try {
+      const data = await auth.signIn({ email, password })
+      if (data) {
+        setIsLoggedIn(true);
         navigate("/movies");
-      })
-      .then(() =>
-        setIsLoggedIn(true)
-      )
-      .catch((err) => {
+      }
+    } catch(err) {
         console.log(err);
-      });
+      };
   }
 
   //проверка 
-  useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
-
-    if (jwt) {
-    auth.getAuthentication(jwt)
-      .then((user) => {
-        setCurrentUser(user)
+const checkToken = () => {
+    auth.getAuthentication()
+      .then((res) => {
+        if (res) {
         setIsLoggedIn(true);
+        }
       })
       .catch((err) => console.log(err))
       .finally(() => {
         setIsAppInit(true)
       })
-    } else {
-      setIsAppInit(true)
-    }
-  }, [])
+  }
+
+  useEffect(() => {
+    checkToken();
+}, []);
 
   //выход пользователя со страницы
   const handleSignOut = () => {

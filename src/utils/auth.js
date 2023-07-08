@@ -15,14 +15,11 @@ signUp = async (data) => {
     credentials: 'include',
     method: 'POST',
     headers: {
-      'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data),
   })
- 
     return this._checkAnswer(res);
- 
 }
 
 signIn = async (data) => {
@@ -30,7 +27,6 @@ signIn = async (data) => {
     credentials: 'include',
     method: 'POST',
     headers: {
-      'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
@@ -39,13 +35,13 @@ signIn = async (data) => {
   
 }
 
-getAuthentication = async () => {
+getAuthentication = async (token) => {
   const res = await fetch(`${this._url}/users/me`, {
     credentials: 'include',
       method: 'GET',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        //'Authorization': `Bearer ${token}`
       },
   })
     return this._checkAnswer(res);
