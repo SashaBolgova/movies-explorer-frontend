@@ -10,22 +10,21 @@ import { SERVER_ERROR_MSG, NOTFOUND_ERROR_MSG } from "../../utils/constants";
 import { mainApi } from "../../utils/MainApi";
 
 
-function SavedMovies(props) {
-    const { error } = props;
+function SavedMovies (props) {
+    const { error, isLoading, setIsLoading } = props;
     const [savedMoviesList, setSavedMoviesList] = useState([]);
     const [isShortFilm, setIsShortFilm] = useState(false);
-    const [searchSavedMovies, setSearcSavedMovies] = useState('')
+    const [searchSavedMovies, setSearchSavedMovies] = useState('')
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-    const [isLoading, setIsLoading] = useState(false);
 
     //получение сохраненных фильмов с сервера
     const getSavedMovies = useCallback(async () => {
         setIsLoading(true);
         try {
             const apiSavedMovies = await mainApi.getSavedMovies();
-            console.log(apiSavedMovies.data);
-            setSavedMoviesList(apiSavedMovies.data);
-            localStorage.setItem("allSavedMovies", JSON.stringify(apiSavedMovies.data));
+            console.log(apiSavedMovies);
+            setSavedMoviesList(apiSavedMovies);
+            localStorage.setItem("savedMovies", JSON.stringify(apiSavedMovies));
         } catch (err) {
             console.log(err);
         } finally {
@@ -35,15 +34,21 @@ function SavedMovies(props) {
 
     //хук загрузки фильмов на страницу
     useEffect(() => {
-        getSavedMovies();
-        localStorage.getItem("allSavedMovies", savedMoviesList);
+        const savedMoviesInLS = localStorage.getItem("savedMovies") ? JSON.parse(localStorage.getItem("savedMovies")) : false;
+        if (savedMoviesInLS) {
+            setSavedMoviesList(savedMoviesInLS)
+        } else {
+            getSavedMovies()
+        }
     }, [])
 
     //удаление фильма из сохраненных
     const handleDeleteMovie = async (movie) => {
         try {
             await mainApi.deleteMovie(movie._id);
-            setSavedMoviesList((state) => state.filter((m) => m._id === movie._id ? '' : m._id))
+            const newArray = savedMoviesList.filter((m) => m._id === movie._id ? '' : m._id);
+            setSavedMoviesList(newArray)
+            localStorage.setItem('savedMovies', JSON.stringify(newArray))
         } catch (err) {
             console.log(err)
         }
@@ -65,7 +70,6 @@ function SavedMovies(props) {
 
     // фильтр фильмов по ключевым словам и короткометражкам
     const filteredMovies = useMemo(() => {
-
         const filtered = savedMoviesList.filter((movie) => {
             const nameRU = movie.nameRU.toLowerCase();
             const nameEN = movie.nameEN.toLowerCase();
@@ -80,10 +84,7 @@ function SavedMovies(props) {
 
     // отображение карточек с фильмами в зависимости от разрешения
     const moviesToRender = useMemo(() => {
-        const countToRender = screenWidth < 768 ? 5 : screenWidth < 1280 ? 8 : 12;
-
         return filteredMovies
-            .slice(0, countToRender)
             .map((movie) => ({
                 ...movie,
                 isLiked: savedMoviesList.some((m) => m.movieId === movie.id)
@@ -92,11 +93,10 @@ function SavedMovies(props) {
     }, [filteredMovies, screenWidth, savedMoviesList]);
 
     const MoviesBlock = () => {
-        if (!moviesToRender.length) {
-            return <h2 className="movies-error-title">{NOTFOUND_ERROR_MSG}</h2>
-        }
+
         return (
             <MoviesCardList>
+                {!moviesToRender.length ? (<h2 className="movies-error-title">{NOTFOUND_ERROR_MSG}</h2>) : ''}
                 {moviesToRender.map((movie) => (
                     <MoviesCard
                         key={movie._id}
@@ -117,8 +117,9 @@ function SavedMovies(props) {
                     onSubmit={filteredMovies}
                     setIsShortFilm={setIsShortFilm}
                     isShortFilm={isShortFilm}
-                    onSearchFormSubmit={setSearcSavedMovies}
+                    onSearchFormSubmit={setSearchSavedMovies}
                     initialValue={searchSavedMovies}
+                    isLoading={isLoading}
                 />
 
                 {isLoading

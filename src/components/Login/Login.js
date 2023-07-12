@@ -34,6 +34,7 @@ const Login = (props) => {
             value={values.email || ''}
             onChange={handleChange}
             error={errors?.email || ''}
+            pattern="^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$"
           />
           <legend className='login__legend'>Пароль</legend>
           <input

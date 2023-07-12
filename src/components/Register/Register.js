@@ -51,6 +51,7 @@ const Register = (props) => {
                         onChange={handleChange}
                         autoComplete="off"
                         error={errors?.email || ''}
+                        pattern="^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$"
                     />
                     <legend className='registration__legend'>Пароль</legend>
                     <input

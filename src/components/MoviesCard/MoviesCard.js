@@ -2,13 +2,12 @@ import React, { useCallback } from "react";
 import { useLocation } from 'react-router-dom';
 import "./MoviesCard.css";
 
-function MoviesCard(props) {
+function MoviesCard (props) {
     const { movie, onMovieLike, onMovieDelete, isOnSavedList } = props;
 
     const movieImageUrl = isOnSavedList
         ? movie.image
         : `https://api.nomoreparties.co${movie.image.url}`
-
 
     const location = useLocation();
 
@@ -20,8 +19,11 @@ function MoviesCard(props) {
         onMovieDelete(movie);
     }
 
-    const getMovieDuration = (mins) => {
-        return `${Math.round(mins / 60)}ч ${mins % 60}мин`
+    const getMovieDuration = (minutes) => {
+        const hours = Math.floor(minutes / 60);
+        const remainingMinutes = minutes % 60;
+        if (!hours) return `${remainingMinutes}м`;
+        return `${hours}ч ${remainingMinutes}м`;
     }
 
     return (

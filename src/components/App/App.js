@@ -11,12 +11,16 @@ import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import auth from "../../utils/auth";
 import { mainApi } from "../../utils/MainApi";
+import Preloader from "../Preloader/Preloader";
+import InfoTooltip from "../InfoTooltip/InfoTooltip";
 
 
-function App() {
+function App () {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({ data: {} });
-  const [isAppInit, setIsAppInit] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isNotifyPopupOpen, setIsNotifyPopupOpen] = useState(false);
+  const [statusMessage, setStatusMessage] = useState(true);
 
   const navigate = useNavigate();
 
@@ -25,12 +29,18 @@ function App() {
     try {
       const data = await auth.signUp({ name, email, password });
       if (data) {
-        handleSignIn(data);
+        localStorage.setItem('token', data.token)
+        setIsLoggedIn(true);
         navigate("/movies");
+        setStatusMessage(`Вы успешно зарегистрированы! Сейчас будете перенаправлены на страницу "Фильмы"`)
       }
-      } catch (err) {
-        console.log(err);
-      }
+    } catch (err) {
+      console.log(err);
+      setIsNotifyPopupOpen(true)
+      setStatusMessage(`Произошла ошибка регистрации:${err}`)
+    } finally {
+      setIsNotifyPopupOpen(true)
+    }
   }
 
   //управление формой авторизации
@@ -38,42 +48,42 @@ function App() {
     try {
       const data = await auth.signIn({ email, password })
       if (data) {
+        localStorage.setItem('token', data.token)
         setIsLoggedIn(true);
         navigate("/movies");
       }
-    } catch(err) {
-        console.log(err);
-      };
+    } catch (err) {
+      console.log(err);
+      setIsNotifyPopupOpen(true)
+      setStatusMessage(`Произошла ошибка авторизации:${err}`)
+    }
   }
 
-  //проверка 
-const checkToken = () => {
-    auth.getAuthentication()
+  //проверка
+  const checkToken = () => {
+    setIsLoading(true);
+    const token = localStorage.getItem('token');
+    auth.getAuthentication(token)
       .then((res) => {
         if (res) {
-        setIsLoggedIn(true);
+          setIsLoggedIn(true);
         }
       })
       .catch((err) => console.log(err))
-      .finally(() => {
-        setIsAppInit(true)
-      })
+      .finally(() => setIsLoading(false))
   }
 
   useEffect(() => {
     checkToken();
-}, []);
+  }, []);
 
-  //выход пользователя со страницы
+  //выход пользователя со страницыgetUserInfo
   const handleSignOut = () => {
-    localStorage.removeItem('jwt');
-    localStorage.removeItem('allMovies');
-    localStorage.removeItem('filteredMovies');
-    localStorage.removeItem('isShort');
-    localStorage.removeItem('search');
-    localStorage.removeItem('allSavedMovies');
-    setCurrentUser(null)
+    localStorage.clear();
     setIsLoggedIn(false);
+    setStatusMessage(`Вы успешно вышли!`);
+    setCurrentUser({ data: {} });
+    setIsNotifyPopupOpen(true);
     navigate('/');
   }
 
@@ -84,6 +94,8 @@ const checkToken = () => {
       setCurrentUser(currentUserInfo);
     } catch (err) {
       console.log(err)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -92,8 +104,12 @@ const checkToken = () => {
     try {
       const updatedUserData = await mainApi.setUserInfo({ name, email });
       setCurrentUser(updatedUserData);
+      setStatusMessage(`Данные успешно обновлены!`)
     } catch (err) {
       console.log(err)
+      setStatusMessage(`Ошибка обновления данных.`)
+    } finally {
+      setIsNotifyPopupOpen(true)
     }
   }
 
@@ -103,8 +119,8 @@ const checkToken = () => {
     }
   }, [isLoggedIn])
 
-  if (!isAppInit) {
-    return null
+  if (isLoading) {
+    return <Preloader />
   }
 
   return (
@@ -114,22 +130,13 @@ const checkToken = () => {
           <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/movies" element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}
-              >
-                <Movies />
-              </ProtectedRoute>
+              <ProtectedRoute element={Movies} isLoggedIn={isLoggedIn} isLoading={isLoading} setIsLoading={setIsLoading} />
             } />
             <Route path="/saved-movies" element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}
-              >
-                <SavedMovies />
-              </ProtectedRoute>
+              <ProtectedRoute element={SavedMovies} isLoggedIn={isLoggedIn} isLoading={isLoading} setIsLoading={setIsLoading} />
             } />
             <Route path="/profile" element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}
-              >
-                <Profile onSignOut={handleSignOut} onUpdateUserData={handleUpdateUserData} />
-              </ProtectedRoute>
+              <ProtectedRoute element={Profile} isLoggedIn={isLoggedIn} onSignOut={handleSignOut} onUpdateUserData={handleUpdateUserData} />
             } />
             <Route path="/signup" element={isLoggedIn
               ? <Navigate to="/" />
@@ -147,6 +154,12 @@ const checkToken = () => {
               />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
+          <InfoTooltip
+            name="notify"
+            isOpen={isNotifyPopupOpen}
+            setPopupOpened={setIsNotifyPopupOpen}
+            statusMessage={statusMessage}
+          />
         </div>
       </div>
     </CurrentUserContext.Provider>

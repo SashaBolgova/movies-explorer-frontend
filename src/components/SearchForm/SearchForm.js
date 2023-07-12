@@ -2,12 +2,12 @@ import React, { useState, useCallback } from "react";
 import "./SearchForm.css";
 import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 
-function SearchForm(props) {
-    const { onSearchFormSubmit, isShortFilm, setIsShortFilm, initialValue } = props;
+function SearchForm (props) {
+    const { onSearchFormSubmit, isShortFilm, setIsShortFilm, initialValue, isLoading = false } = props;
     const [search, setSearch] = useState(initialValue ?? '');
     const [error, setError] = useState('');
 
-    const handleSearchSubmit = useCallback((e) => {
+    const handleSearchSubmit = (e) => {
         e.preventDefault();
 
         if (search === '') {
@@ -17,11 +17,11 @@ function SearchForm(props) {
             setError('');
         }
 
-    }, [search, onSearchFormSubmit]);
+    };
 
     return (
         <div className="search">
-            <form className="search__container" on Submit={handleSearchSubmit}>
+            <form className="search__container" onSubmit={handleSearchSubmit}>
                 <input className="search__input"
                     placeholder="Фильм"
                     type="text"
@@ -29,12 +29,11 @@ function SearchForm(props) {
                     value={search}
                     onChange={(e) => { setSearch(e.target.value) }}
                 />
-                <button className="search__button" type="submit">Найти</button>
+                <button className="search__button" type="submit" disabled={isLoading}>Найти</button>
             </form>
             {!search && (<span className="search__error-text">{error}</span>)}
             <div className="search__checkbox">
-                <FilterCheckbox value={isShortFilm} onChange={setIsShortFilm}/>
-                <label className="search__label">Короткометражки</label>
+                <FilterCheckbox value={isShortFilm} onChange={setIsShortFilm} />
             </div>
         </div>
     );

@@ -8,7 +8,7 @@ import AccountIcon from "../AccountIcon/AccountIcon";
 import BurgerMenu from "../BurgerMenu/BurgerMenu";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
-function Header() {
+function Header () {
   const location = useLocation();
   const currentUser = useContext(CurrentUserContext);
   return (
@@ -16,7 +16,7 @@ function Header() {
       <div className="header__container">
         <div className="header__nav">
           <Logo />
-          <div className="header__links">{currentUser.name ? <Navigation /> : null}</div>
+          <div className="header__links">{currentUser?.name ? <Navigation /> : null}</div>
         </div>
         <div className="header__menu">
           {currentUser.name ? (

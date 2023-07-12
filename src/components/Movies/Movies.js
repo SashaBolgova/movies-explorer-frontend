@@ -10,8 +10,8 @@ import { moviesApi } from "../../utils/MoviesApi";
 import { mainApi } from "../../utils/MainApi";
 import { SERVER_ERROR_MSG, NOTFOUND_ERROR_MSG } from "../../utils/constants";
 
-function Movies(props) {
-    const { error } = props;
+function Movies (props) {
+    const { error, isLoading, setIsLoading } = props;
     const [movies, setMovies] = useState([]);
     const [filteredMoviesList, setFilteredMoviesList] = useState([]);
     const [savedMoviesList, setSavedMoviesList] = useState([]);
@@ -20,16 +20,18 @@ function Movies(props) {
         return savedIsShort === "true"
     });
     const [search, setSearch] = useState(localStorage.getItem('search') ?? '');
+    const [firstSearch, setFirstSearch] = useState(false);
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
     const [cardsToLoad, setCardsToLoad] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
 
     //добавление фильма в сохраненные, управление кнопкой лайка
     const handleAddMovieToSaved = async (movie) => {
         try {
             if (!movie.isLiked) {
                 const newMovie = await mainApi.saveMovie(movie);
-                setSavedMoviesList([newMovie, ...savedMoviesList]);
+                const newArray = [newMovie, ...savedMoviesList];
+                localStorage.setItem('savedMovies', JSON.stringify(newArray))
+                setSavedMoviesList(newArray);
             } else {
                 await handleDeleteMovie(movie)
             }
@@ -44,16 +46,13 @@ function Movies(props) {
         try {
             const movieToDelete = savedMoviesList.find((m) => m.movieId === movie.id)
             await mainApi.deleteMovie(movieToDelete._id);
-            setSavedMoviesList((state) => state.filter((m) => m.movieId === movie.id ? '' : m.movieId))
+            const newArray = savedMoviesList.filter((m) => m.movieId !== movie.id);
+            localStorage.setItem('savedMovies', JSON.stringify(newArray))
+            setSavedMoviesList(newArray)
         } catch (err) {
             console.log(err)
         }
     }
-
-    //управление шириной экрана
-    const handleResize = useCallback(() => {
-        setScreenWidth(window.innerWidth);
-    }, [])
 
     //получение фильмов с сервера beatfilm-movies
     const getMovies = useCallback(async () => {
@@ -61,6 +60,7 @@ function Movies(props) {
         try {
             const apiMovies = await moviesApi.getMovies();
             setMovies(apiMovies);
+            // setMovies(initialFilmList);
             localStorage.setItem("allMovies", JSON.stringify(apiMovies));
         } catch (err) {
             console.log(err);
@@ -74,7 +74,9 @@ function Movies(props) {
         setIsLoading(true)
         try {
             const apiSavedMovies = await mainApi.getSavedMovies();
-            setSavedMoviesList(apiSavedMovies.data);
+            setSavedMoviesList(apiSavedMovies);
+            // setSavedMoviesList(initialSavedFilms)
+            localStorage.setItem("savedMovies", JSON.stringify(apiSavedMovies));
 
         } catch (err) {
             console.log(err);
@@ -85,31 +87,25 @@ function Movies(props) {
 
     // загрузкa фильмов на страницу
     useEffect(() => {
-        getMovies();
-        getSavedMovies();
-        localStorage.getItem("allMovies", movies);
-
+        const allMoviesInLS = localStorage.getItem("allMovies");
+        const savedMoviesInLS = localStorage.getItem("savedMovies");
+        if (!allMoviesInLS) { getMovies() } else { setMovies(JSON.parse(allMoviesInLS)) }
+        if (!savedMoviesInLS) { getSavedMovies() } else { setSavedMoviesList(JSON.parse(savedMoviesInLS)) }
     }, [])
 
-    // изменение ширины экрана
-    useEffect(() => {
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        }
-    }, [])
 
     //сохранение состояния фильтра короткометражек
     useEffect(() => {
-        localStorage.setItem('isShort', String(isShortFilm));
+        localStorage.setItem('isShort', String(isShortFilm)); // проверить, правильно ли превращается в текст
     }, [isShortFilm]);
+
+
 
     // фильтр фильмов по ключевым словам и короткометражкам
     const filteredMovies = useMemo(() => {
         if (!search) {
             return [];
         }
-
         const filtered = movies.filter((movie) => {
             const nameRU = movie.nameRU.toLowerCase();
             const nameEN = movie.nameEN.toLowerCase();
@@ -159,32 +155,30 @@ function Movies(props) {
                     setIsShortFilm={setIsShortFilm}
                     isShortFilm={isShortFilm}
                     onSearchFormSubmit={setSearch}
-                    initialValue={search} />
+                    initialValue={search}
+                    isLoading={isLoading}
+                    setFirstSearch={setFirstSearch}
+                />
                 {isLoading
                     ? <Preloader />
                     : (
-                        <>
-                            {search && !moviesToRender.length && (<h2 className="movies-error-title">{NOTFOUND_ERROR_MSG}</h2>)}
-
-                            {search && moviesToRender.length && (
-                                <MoviesCardList>
-                                    {moviesToRender.map((movie) => (
+                        <MoviesCardList>
+                            {search && moviesToRender.length
+                                ? (
+                                    moviesToRender.map((movie) => (
                                         <MoviesCard
                                             key={movie.id}
                                             movie={movie}
                                             onMovieLike={handleAddMovieToSaved}
                                             onMovieDelete={handleDeleteMovie}
                                         />
-                                    ))}
-                                </MoviesCardList>
-                            )}
-
-                            {error && <h2 className="movies-error-title">{SERVER_ERROR_MSG}</h2>}
-                        </>
+                                    ))
+                                ) : (<h2 className="movies-error-title">{error ? SERVER_ERROR_MSG : NOTFOUND_ERROR_MSG}</h2>)}
+                        </MoviesCardList>
                     )}
                 <div className="movies-more-wrap">
-                    {filteredMovies > moviesToRender && (
-                        <button className="movies-more-button" type="button" onClick={handleMoreClick}>Ещё</button>)}
+                    {(filteredMovies > moviesToRender) ? (
+                        <button className="movies-more-button" type="button" onClick={handleMoreClick}>Ещё</button>) : ''}
                 </div>
             </main>
             <Footer />

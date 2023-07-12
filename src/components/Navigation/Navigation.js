@@ -1,13 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./Navigation.css";
 
-function Navigation() {
+function Navigation () {
+    const setLinkClass = (navLink) =>
+        navLink.isActive
+            ? 'navigation__link navigation__link_active'
+            : 'navigation__link';
+
     return (
         <nav className="navigation">
             <div className="navigation__links">
-                <Link to="/movies" className='navigation__link'>Фильмы</Link>
-                <Link to="/saved-movies" className='navigation__link'>Сохранённые фильмы</Link>
+                <NavLink to="/movies" className={setLinkClass}>Фильмы</NavLink>
+                <NavLink to="/saved-movies" className={setLinkClass}>Сохранённые фильмы</NavLink>
             </div>
         </nav>
     )

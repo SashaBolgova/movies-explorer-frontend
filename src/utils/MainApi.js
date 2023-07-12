@@ -1,32 +1,35 @@
+export function getActualToken () {
+    return localStorage.getItem('token');
+}
+
 export class MainApi {
     constructor(options) {
         this._baseUrl = options.baseUrl;
     }
-
-    _handleResponse(res) {
+    _handleResponse (res) {
         if (res.ok) {
             return res.json();
         }
         return Promise.reject(`Ошибка: ${res.status}`);
     }
 
-    async getUserInfo() {
+    async getUserInfo () {
         const res = await fetch(`${this._baseUrl}/users/me`, {
             method: "GET",
-            credentials: 'include',
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getActualToken()}`
+            },
         })
         return this._handleResponse(res);
     }
 
-    async setUserInfo(data) {
+    async setUserInfo (data) {
         const res = await fetch(`${this._baseUrl}/users/me`, {
             method: 'PATCH',
-            credentials: 'include',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getActualToken()}`
             },
             body: JSON.stringify({
                 name: data.name,
@@ -36,23 +39,23 @@ export class MainApi {
         return this._handleResponse(res);
     }
 
-    async getSavedMovies() {
+    async getSavedMovies () {
         const res = await fetch(`${this._baseUrl}/movies`, {
             method: 'GET',
-            credentials: 'include',
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getActualToken()}`
+            },
         })
         return this._handleResponse(res);
     }
 
-    async saveMovie(data) {
+    async saveMovie (data) {
         const res = await fetch(`${this._baseUrl}/movies`, {
             method: 'POST',
-            credentials: 'include',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getActualToken()}`
             },
             body: JSON.stringify({
                 nameRU: data.nameRU || '',
@@ -71,18 +74,19 @@ export class MainApi {
         return this._handleResponse(res);
     }
 
-    async deleteMovie(id) {
+    async deleteMovie (id) {
         const res = await fetch(`${this._baseUrl}/movies/${id}`, {
             method: 'DELETE',
-            credentials: 'include',
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getActualToken()}`
+            },
         })
         return this._handleResponse(res);
     }
 }
 
 export const mainApi = new MainApi({
-    baseUrl: 'https://api.sashadiploma.nomoredomains.rocks'
+    baseUrl: 'https://api.sashadiploma.nomoredomains.rocks',
+    // baseUrl: 'http://localhost:3001',
 });

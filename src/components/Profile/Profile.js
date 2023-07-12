@@ -6,11 +6,22 @@ import Navigation from "../Navigation/Navigation";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { useFormWithValidation } from "../validation/validation"
 
-function Profile(props) {
+function Profile (props) {
     const { onUpdateUserData, onSignOut } = props;
     const { values, handleChange, isValid, resetForm } = useFormWithValidation();
     const currentUser = useContext(CurrentUserContext);
     const [isUpdatedUserData, setIsUpdatedUserData] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
+    const handleClickBtn = () => {
+        if (isEdit) {
+            onUpdateUserData({
+                name: values.name,
+                email: values.email
+            })
+        } else {
+            setIsEdit(true)
+        }
+    }
 
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
@@ -37,7 +48,7 @@ function Profile(props) {
             </Header>
             <div className="profile__container">
                 <h2 className='profile__header'>Привет, {currentUser.name}!</h2>
-                <form className="profile__form" onSubmit={handleSubmit}>
+                <form className="profile__form">
                     <div className="profile__user-info">
                         <label className="profile__label">Имя</label>
                         <input
@@ -60,11 +71,15 @@ function Profile(props) {
                     </div>
                 </form>
                 <ul className="profile__links">
-                    <Link className="profile__option"><button className="profile__link" type="submit" disabled={!isUpdatedUserData || !isValid}>Редактировать</button></Link>
-                    <Link to="/signin" className="profile__option"><button className="profile__link" type="button" onClick={onSignOut}>Выйти из аккаунта</button></Link>
+                    <Link className="profile__option">
+                        <button className={`profile__link ${isEdit ? 'profile__link_btn' : ''}`} onClick={handleClickBtn} type="submit" disabled={isEdit ? !isValid || !isUpdatedUserData : false}>
+                            Редактировать
+                        </button>
+                    </Link>
+                    <Link to="/" className="profile__option"><button className="profile__link" type="button" onClick={onSignOut}>Выйти из аккаунта</button></Link>
                 </ul>
             </div>
-        </section>
+        </section >
     )
 }
 

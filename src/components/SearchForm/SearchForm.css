@@ -14,7 +14,7 @@
 }
 
 .search__input {
-  font-family: "Inter", "Arial", sans-serif;
+  font-family: 'Inter', 'Arial', sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 28px;
@@ -28,7 +28,7 @@
 }
 
 .search__button {
-  font-family: "Inter", "Arial", sans-serif;
+  font-family: 'Inter', 'Arial', sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 11px;
@@ -51,20 +51,11 @@
 
 .search__checkbox {
   display: flex;
-}
-
-.search__label {
-  font-family: "Inter", "Arial", sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 18px;
-  color: #000000;
-  margin-left: 14px;
+  align-items: center;
 }
 
 .search__error-text {
-  font-family: "Inter", "Arial", sans-serif;
+  font-family: 'Inter', 'Arial', sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 10px;
