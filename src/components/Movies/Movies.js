@@ -54,6 +54,11 @@ function Movies (props) {
         }
     }
 
+    //управление шириной экрана
+    const handleResize = useCallback(() => {
+        setScreenWidth(window.innerWidth);
+    }, [])
+
     //получение фильмов с сервера beatfilm-movies
     const getMovies = useCallback(async () => {
         setIsLoading(true);
@@ -93,6 +98,13 @@ function Movies (props) {
         if (!savedMoviesInLS) { getSavedMovies() } else { setSavedMoviesList(JSON.parse(savedMoviesInLS)) }
     }, [])
 
+    // изменение ширины экрана
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        }
+    }, [])
 
     //сохранение состояния фильтра короткометражек
     useEffect(() => {
