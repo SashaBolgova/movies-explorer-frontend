@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import './Login.css'
 import Logo from "../Logo/Logo";
 import SubmitForm from "../SubmitForm/SubmitForm";
-import { useFormWithValidation } from "../validation/validation";
+import InputError from "../InputError/InputError";
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
 const Login = (props) => {
   const { onSubmit } = props;
@@ -26,16 +27,17 @@ const Login = (props) => {
         <fieldset className='login__info'>
           <legend className='login__legend'>E-mail</legend>
           <input
-            className='login__input'
+            className={`login__input ${errors?.email ? 'login__input_error' : ''}`}
             id='email'
             name='email'
             type="email"
             required
             value={values.email || ''}
             onChange={handleChange}
-            error={errors?.email || ''}
             pattern="^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$"
+            placeholder="ваш Email вида email@mail.com"
           />
+          <InputError error={errors.email} />
           <legend className='login__legend'>Пароль</legend>
           <input
             className='login__input'
@@ -45,8 +47,10 @@ const Login = (props) => {
             required
             value={values.password || ''}
             onChange={handleChange}
-            error={errors?.password || ''}
+            minLength={6}
+            maxLength={30}
           />
+          <InputError error={errors.password} />
         </fieldset>
         <SubmitForm buttonText="Войти" isValid={!isValid}>
           <p className='submit__text'>Ещё не зарегистрированы?

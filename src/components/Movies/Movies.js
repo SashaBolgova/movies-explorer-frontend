@@ -8,19 +8,17 @@ import Footer from '../Footer/Footer';
 import Preloader from '../Preloader/Preloader';
 import { moviesApi } from "../../utils/MoviesApi";
 import { mainApi } from "../../utils/MainApi";
-import { SERVER_ERROR_MSG, NOTFOUND_ERROR_MSG } from "../../utils/constants";
+import { SERVER_ERROR_MSG, NOTFOUND_ERROR_MSG, MAX_DURATION_SHORT_FILM, WIDTH_SCREEN_PC, WIDTH_SCREEN_PLANSHET, QTY_CARDS_PC, QTY_CARDS_PLANSHET, QTY_CARDS_PHONE } from "../../utils/constants";
 
 function Movies (props) {
     const { error, isLoading, setIsLoading } = props;
     const [movies, setMovies] = useState([]);
-    const [filteredMoviesList, setFilteredMoviesList] = useState([]);
     const [savedMoviesList, setSavedMoviesList] = useState([]);
     const [isShortFilm, setIsShortFilm] = useState(() => {
         const savedIsShort = localStorage.getItem("isShort");
         return savedIsShort === "true"
     });
     const [search, setSearch] = useState(localStorage.getItem('search') ?? '');
-    const [firstSearch, setFirstSearch] = useState(false);
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
     const [cardsToLoad, setCardsToLoad] = useState(0);
 
@@ -121,23 +119,25 @@ function Movies (props) {
         const filtered = movies.filter((movie) => {
             const nameRU = movie.nameRU.toLowerCase();
             const nameEN = movie.nameEN.toLowerCase();
-            if (isShortFilm && movie.duration > 40) {
+            if (isShortFilm && movie.duration > MAX_DURATION_SHORT_FILM) {
                 return false;
             }
-            return nameRU.includes(search) || nameEN.includes(search);
+            return nameRU.includes(search.toLowerCase()) || nameEN.includes(search.toLowerCase());
         })
 
         localStorage.setItem("search", search);
         localStorage.setItem("isShort", String(isShortFilm));
         localStorage.setItem("filteredMovies", JSON.stringify(filtered));
-        setFilteredMoviesList(filtered);
-
         return filtered
     }, [movies, isShortFilm, search]);
 
     // отображение карточек с фильмами в зависимости от разрешения
     const moviesToRender = useMemo(() => {
-        const countToRender = screenWidth < 768 ? 5 : screenWidth < 1280 ? 8 : 12;
+        const countToRender = screenWidth < WIDTH_SCREEN_PLANSHET
+            ? QTY_CARDS_PHONE
+            : screenWidth < WIDTH_SCREEN_PC
+                ? QTY_CARDS_PLANSHET
+                : QTY_CARDS_PC;
 
         return filteredMovies
             .slice(0, countToRender + cardsToLoad)
@@ -150,7 +150,7 @@ function Movies (props) {
 
     // управление кнопкой "Еще"
     const handleMoreClick = useCallback(() => {
-        if (screenWidth < 1280) {
+        if (screenWidth < WIDTH_SCREEN_PC) {
             setCardsToLoad((prev) => prev + 2);
         } else {
             setCardsToLoad((prev) => prev + 3);
@@ -169,7 +169,6 @@ function Movies (props) {
                     onSearchFormSubmit={setSearch}
                     initialValue={search}
                     isLoading={isLoading}
-                    setFirstSearch={setFirstSearch}
                 />
                 {isLoading
                     ? <Preloader />

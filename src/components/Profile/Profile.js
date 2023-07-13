@@ -1,14 +1,15 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Profile.css";
 import Header from "../Header/Header";
 import Navigation from "../Navigation/Navigation";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import { useFormWithValidation } from "../validation/validation"
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
+import InputError from "../InputError/InputError";
 
 function Profile (props) {
     const { onUpdateUserData, onSignOut } = props;
-    const { values, handleChange, isValid, resetForm } = useFormWithValidation();
+    const { values, handleChange, isValid, resetForm, errors } = useFormWithValidation();
     const currentUser = useContext(CurrentUserContext);
     const [isUpdatedUserData, setIsUpdatedUserData] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
@@ -22,15 +23,6 @@ function Profile (props) {
             setIsEdit(true)
         }
     }
-
-    const handleSubmit = useCallback((e) => {
-        e.preventDefault();
-
-        onUpdateUserData({
-            name: values.name,
-            email: values.email
-        })
-    }, [values.name, values.email, onUpdateUserData])
 
     useEffect(() => {
         values.name !== currentUser.name || values.email !== currentUser.email
@@ -53,12 +45,16 @@ function Profile (props) {
                         <label className="profile__label">Имя</label>
                         <input
                             className="profile__input"
+                            minLength={6}
+                            maxLength={30}
                             type="text"
                             name="name"
                             id="name"
                             value={values.name || currentUser.name}
                             onChange={handleChange} />
                     </div>
+                    <InputError error={errors.name} />
+                    <div className="profile__border"></div>
                     <div className="profile__user-info">
                         <label className="profile__label">E-mail</label>
                         <input
@@ -69,6 +65,7 @@ function Profile (props) {
                             value={values.email || currentUser.email}
                             onChange={handleChange} />
                     </div>
+                    <InputError error={errors.email} />
                 </form>
                 <ul className="profile__links">
                     <Link className="profile__option">

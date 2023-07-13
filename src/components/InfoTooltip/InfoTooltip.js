@@ -1,8 +1,6 @@
 import Popup from '../Popup/Popup';
-import { useEffect, useState } from 'react';
 
 const InfoTooltip = ({
-  name,
   isOpen,
   setPopupOpened,
   statusMessage

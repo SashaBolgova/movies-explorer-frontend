@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import './Register.css'
 import Logo from "../Logo/Logo";
 import SubmitForm from "../SubmitForm/SubmitForm";
-import { useFormWithValidation } from "../validation/validation";
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
+import InputError from "../InputError/InputError";
 
 const Register = (props) => {
     const { onSubmit } = props;
@@ -40,6 +41,7 @@ const Register = (props) => {
                         maxLength="40"
                         error={errors?.name || 'Ошибка'}
                     />
+                    <InputError error={errors.name} />
                     <legend className='registration__legend'>E-mail</legend>
                     <input
                         className='registration__input'
@@ -53,6 +55,7 @@ const Register = (props) => {
                         error={errors?.email || ''}
                         pattern="^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$"
                     />
+                    <InputError error={errors.email} />
                     <legend className='registration__legend'>Пароль</legend>
                     <input
                         className='registration__input'
@@ -63,8 +66,10 @@ const Register = (props) => {
                         value={values.password || ''}
                         onChange={handleChange}
                         autoComplete="off"
-                        error={errors?.password || ''}
+                        minLength={6}
+                        maxLength={30}
                     />
+                    <InputError error={errors.password} />
                 </fieldset>
                 <SubmitForm buttonText="Зарегистрироваться" isValid={!isValid}>
                     <p className='submit__text'>Уже зарегистрированы?

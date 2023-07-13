@@ -6,7 +6,7 @@ import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import Footer from '../Footer/Footer';
 import Preloader from '../Preloader/Preloader';
-import { SERVER_ERROR_MSG, NOTFOUND_ERROR_MSG } from "../../utils/constants";
+import { SERVER_ERROR_MSG, NOTFOUND_ERROR_MSG, MAX_DURATION_SHORT_FILM } from "../../utils/constants";
 import { mainApi } from "../../utils/MainApi";
 
 
@@ -73,7 +73,7 @@ function SavedMovies (props) {
         const filtered = savedMoviesList.filter((movie) => {
             const nameRU = movie.nameRU.toLowerCase();
             const nameEN = movie.nameEN.toLowerCase();
-            if (isShortFilm && movie.duration > 40) {
+            if (isShortFilm && movie.duration > MAX_DURATION_SHORT_FILM) {
                 return false;
             }
             return nameRU.includes(searchSavedMovies) || nameEN.includes(searchSavedMovies);
