@@ -1,0 +1,33 @@
+.burger-menu {
+    display: flex;
+    justify-content: space-between;
+    max-width: 290px;
+}
+
+.burger-menu__button {
+    background-image: url("../../images/burger-menu.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    padding: 0;
+    width: 40px;
+    height: 43px;
+    border: none;
+    cursor: pointer;
+}
+
+.burger-menu__button:hover {
+    opacity: 0.6;
+}
+
+@media screen and (min-width: 769px) {
+    .burger-menu {
+        max-width: 708px;
+        display: none;
+    }
+
+    .burger-menu__button {
+        width: 44px;
+        height: 44px;
+    }
+}

@@ -1,0 +1,19 @@
+.input-error {
+  padding-top: 2px;
+  padding-bottom: 0px;
+  display: block;
+  min-height: 18px;
+  max-height: 18px;
+  opacity: 0;
+  font-weight: 400;
+  font-size: 9px;
+  line-height: 10px;
+  color: #ff4062;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+}
+.input-error_active {
+  opacity: 1;
+}
